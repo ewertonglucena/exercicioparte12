@@ -1,6 +1,7 @@
 package pendrive;
 
 import java.text.DecimalFormat;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Pendrive implements FormatacaoTexto{
@@ -31,6 +32,9 @@ public class Pendrive implements FormatacaoTexto{
     }
 
     public void setMarca(String marca) {
+        if ("".equals(marca)){
+            throw new IllegalArgumentException("Digitar uma marca válida, campos vazios não são permitidos!");
+        }
         this.marca = marca;
     }
 
@@ -107,6 +111,10 @@ public class Pendrive implements FormatacaoTexto{
     
     public void entradaDados(){
         Scanner sc = new Scanner(System.in);
+        boolean entradaValida = false;
+        do{
+            try
+            {
         System.out.print("Insira a Marca: ");
         setMarca(sc.nextLine());
         System.out.print("Insira o Modelo: ");
@@ -115,6 +123,14 @@ public class Pendrive implements FormatacaoTexto{
         setCapacidade(Integer.parseInt(sc.nextLine()));
         System.out.print("Insira o preço: R$");
         setPreco(Double.parseDouble(sc.nextLine()));
+        entradaValida = true;
+            }
+            catch (InputMismatchException e)
+            {
+                System.err.printf("\nExceção: %s", e );
+                System.out.println("Você deve digitar valores válidos!");
+           }
+        }while(entradaValida == false);
     }
     
     public void cadastrar(String marca, String modelo, int capacidade, double preco){
