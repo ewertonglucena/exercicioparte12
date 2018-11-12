@@ -4,10 +4,11 @@ import java.text.DecimalFormat;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Pendrive implements FormatacaoTexto{
+public class Pendrive extends Relatorio{
     private String marca, modelo;
     private int capacidade;
     private double preco;
+
     public Pendrive(){}
     
     public Pendrive(String marca,String modelo, int capacidade, double preco){
@@ -22,9 +23,10 @@ public class Pendrive implements FormatacaoTexto{
     }
 
     public void setCapacidade(int capacidade) {
-        if (capacidade>0){
+        if (capacidade <= 0){
+            throw new IllegalArgumentException("Não são permitidos zero e números negativos.");
+        }
         this.capacidade = capacidade;
-    }
     }
 
     public String getMarca() {
@@ -33,7 +35,13 @@ public class Pendrive implements FormatacaoTexto{
 
     public void setMarca(String marca) {
         if ("".equals(marca)){
-            throw new IllegalArgumentException("Digitar uma marca válida, campos vazios não são permitidos!");
+            throw new IllegalArgumentException("Não insira campos vazios.");
+        }
+        if(" ".equals(marca)){
+            throw new IllegalArgumentException("Não insira espaços");
+        }
+        if(marca == null){
+           throw new IllegalArgumentException("Não são permitidos valores nulos");
         }
         this.marca = marca;
     }
@@ -43,6 +51,15 @@ public class Pendrive implements FormatacaoTexto{
     }
 
     public void setModelo(String modelo){
+        if ("".equals(modelo)){
+            throw new IllegalArgumentException("Não insira campos vazios.");
+        }
+        if(" ".equals(modelo)){
+            throw new IllegalArgumentException("Não insira espaços");
+        }
+        if(modelo == null){
+           throw new IllegalArgumentException("Não são permitidos valores nulos");
+        }
         this.modelo = modelo;
     }
 
@@ -51,9 +68,10 @@ public class Pendrive implements FormatacaoTexto{
     }
 
     public void setPreco(double preco) {
-        if(preco>0){
+        if (preco <= 0){
+            throw new IllegalArgumentException("Não são permitidos zero e números negativos.");
+        }
         this.preco = preco;
-    }
     }
     
     public void imprimir(){
@@ -111,26 +129,75 @@ public class Pendrive implements FormatacaoTexto{
     
     public void entradaDados(){
         Scanner sc = new Scanner(System.in);
-        boolean entradaValida = false;
+        boolean entradaValida = true;
         do{
             try
             {
-        System.out.print("Insira a Marca: ");
-        setMarca(sc.nextLine());
-        System.out.print("Insira o Modelo: ");
-        setModelo(sc.nextLine());
-        System.out.print("Insira a Capacidade (GB): ");
-        setCapacidade(Integer.parseInt(sc.nextLine()));
-        System.out.print("Insira o preço: R$");
-        setPreco(Double.parseDouble(sc.nextLine()));
-        entradaValida = true;
+                do{
+                    try{
+                        System.out.print("Insira a Marca: ");
+                        setMarca(sc.nextLine());
+                        entradaValida = false;
+                    }
+                    catch(IllegalArgumentException e){
+                        System.out.println("Campos vazios não são permitidos!");
+                        System.out.println("Digite uma marca válida.");
+                    }
+                }while(entradaValida);
+                entradaValida = true;
+                do{
+                    try{
+                        System.out.print("Insira o Modelo: ");
+                        setModelo(sc.nextLine());
+                        entradaValida = false;
+                    }
+                    catch(IllegalArgumentException e){
+                        System.out.println("Campos vazios não são permitidos!");
+                        System.out.println("Digite um modelo válido.");
+                    }
+               }while(entradaValida);
+               entradaValida = true;
+               do{
+                    try{    
+                        System.out.print("Insira a Capacidade (GB): ");
+                        setCapacidade(Integer.parseInt(sc.nextLine()));
+                        entradaValida = false;
+                    }
+                    catch(NumberFormatException e)
+                    {
+                        System.out.println("Apenas são permitidos valores inteiros!");
+                        System.out.println("Digite uma capacidade válida.");
+                    }
+                    catch(IllegalArgumentException e){
+                        System.out.println("Zero ou números negativos não são permitidos!");
+                        System.out.println("Digite uma capacidade válida.");
+                    }
+               }while(entradaValida);
+               entradaValida = true;
+               do{
+                   try{
+                        System.out.print("Insira o preço: R$");
+                        setPreco(Double.parseDouble(sc.nextLine()));
+                        entradaValida = false;
+                   }
+                    catch(NumberFormatException e)
+                    {
+                        System.out.println("Apenas são permitidos valores do tipo double!");
+                        System.out.println("Digite um preço válido.");
+                    }
+                    catch(IllegalArgumentException e){
+                        System.out.println("Zero ou números negativos não são permitidos!");
+                        System.out.println("Digite um preço válido.");
+                    }
+               }while(entradaValida);
+               entradaValida = false;
             }
             catch (InputMismatchException e)
             {
                 System.err.printf("\nExceção: %s", e );
                 System.out.println("Você deve digitar valores válidos!");
            }
-        }while(entradaValida == false);
+        }while(entradaValida);
     }
     
     public void cadastrar(String marca, String modelo, int capacidade, double preco){
@@ -138,5 +205,15 @@ public class Pendrive implements FormatacaoTexto{
         setModelo(modelo);
         setCapacidade(capacidade);
         setPreco(preco);
+    }
+    
+    public void desconto(int desc){
+        if(desc <=0){
+            throw new IllegalArgumentException("Não são permitidos valores negativos ou iguais a Zero");
+        }
+        Double descValor = preco*((double)desc/100);
+        DecimalFormat p = new DecimalFormat("#,##0.00");
+        System.out.println("Valor do desconto: R$"+p.format(descValor));
+        System.out.println("Valor com desconto: R$"+p.format(preco-descValor));
     }
 }
