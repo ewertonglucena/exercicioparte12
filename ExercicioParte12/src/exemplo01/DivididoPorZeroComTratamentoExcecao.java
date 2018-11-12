@@ -21,13 +21,13 @@ public class DivididoPorZeroComTratamentoExcecao {
                 int denominador = scanner.nextInt();
                 
                 int resultado = quociente (numerador, denominador);
-                System.out.printf("\nResult: %d / %d = %d\n", numerador,
+                System.out.printf("\nResultado: %d / %d = %d\n", numerador,
                         denominador, resultado);
                 continuarLoop = false;
             }
-            catch (InputMismatchException inputMismatchException)
+            catch (InputMismatchException excecaoEntradaInvalida)
             {
-                System.err.printf("\nExceção: %s\n", inputMismatchException);
+                System.err.printf("\nExceção: %s\n", excecaoEntradaInvalida);
                 scanner.nextLine();
                 System.out.println("Você deve inserir inteiros. Por favor tente novamente.\n");
             }
